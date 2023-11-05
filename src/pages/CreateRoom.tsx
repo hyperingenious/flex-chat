@@ -7,11 +7,12 @@ export default function CreateRoom() {
   const [groupName, setGroupName] = useState("");
   const [maxMember, setMaxMember] = useState(2);
   const [groupDesc, setGroupDesc] = useState("");
+  const [yourName, setYourName] = useState("");
   const navigate = useNavigate();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    await createGroup(groupName, maxMember, groupDesc, "");
+    await createGroup(groupName, maxMember, groupDesc, "", yourName);
   }
 
   useEffect(
@@ -55,6 +56,17 @@ export default function CreateRoom() {
             value={maxMember}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
               setMaxMember(Number(e.target.value))
+            }
+          />
+          <input
+            placeholder="Enter your name"
+            className="border-2 border-gray-950"
+            type="text"
+            name="Your Name"
+            id="yourName"
+            value={yourName}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+              setYourName(e.target.value)
             }
           />
         </div>
