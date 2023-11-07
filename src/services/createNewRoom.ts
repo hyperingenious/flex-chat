@@ -1,5 +1,16 @@
 import { supabase } from "./supabase.ts";
 
+function saveCredentials({
+  UUID,
+  participant_id,
+}: {
+  UUID: string;
+  participant_id: string;
+}) {
+  localStorage.setItem("FLEX_CHAT_UUID", UUID);
+  localStorage.setItem("participant_id", participant_id);
+}
+
 export async function createGroup(
   groupName: string,
   memberLimit: number,
@@ -8,6 +19,8 @@ export async function createGroup(
   name: string
 ) {
   const UUID = crypto.randomUUID();
+  const participant_id = crypto.randomUUID();
+
   const { error } = await supabase.from("chats").insert([
     {
       // Data related to group created
@@ -19,10 +32,11 @@ export async function createGroup(
       group_avatar: avatar,
 
       // JSON object which will contains all the users
-      users: [
-        // user object which contain details of the user
+      json: [
+        // user object which contains details of the user
         {
           name,
+          participant_id,
           time_of_entering: "now()",
           message: [],
           permissions: {
@@ -38,7 +52,9 @@ export async function createGroup(
   ]);
 
   if (error) throw new Error("There is an error");
-  localStorage.setItem("FLEX_CHAT_UUID", UUID);
+
+  // Saving the credentials
+  saveCredentials({ UUID, participant_id });
 
   return null;
 }
