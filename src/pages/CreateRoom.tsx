@@ -14,7 +14,7 @@ export default function CreateRoom() {
   // Creating the room
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    await createGroup(groupName, maxMember, groupDesc, "", yourName);
+    await createGroup(groupName, maxMember, groupDesc, "", yourName, navigate);
   }
 
   useEffect(

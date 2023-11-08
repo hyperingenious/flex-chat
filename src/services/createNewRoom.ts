@@ -1,3 +1,4 @@
+import { NavigateFunction } from "react-router-dom";
 import { supabase } from "./supabase.ts";
 
 function saveCredentials({
@@ -29,7 +30,8 @@ export async function createGroup(
   memberLimit: number,
   description: string,
   avatar: string | null,
-  name: string
+  name: string,
+  navigate: NavigateFunction
 ) {
   validateNameLength({ groupName, name });
 
@@ -69,6 +71,9 @@ export async function createGroup(
 
   // Saving the credentials
   saveCredentials({ UUID, participant_id });
+
+  // Navigate user to room
+  navigate(`/room/${UUID}`);
 
   return null;
 }
