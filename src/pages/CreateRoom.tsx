@@ -4,12 +4,14 @@ import { useNavigate } from "react-router-dom";
 
 export default function CreateRoom() {
   const DOES_UUID_EXISTS = localStorage.getItem("FLEX_CHAT_UUID");
+
   const [groupName, setGroupName] = useState("");
   const [maxMember, setMaxMember] = useState(2);
   const [groupDesc, setGroupDesc] = useState("");
   const [yourName, setYourName] = useState("");
   const navigate = useNavigate();
 
+  // Creating the room
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     await createGroup(groupName, maxMember, groupDesc, "", yourName);

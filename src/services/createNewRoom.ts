@@ -11,6 +11,19 @@ function saveCredentials({
   localStorage.setItem("participant_id", participant_id);
 }
 
+function validateNameLength({
+  groupName,
+  name,
+}: {
+  groupName: string;
+  name: string;
+}) {
+  if (groupName.length <= 5)
+    throw new Error("Group name at least contain 5 characters");
+  if (name.length <= 5) throw new Error("Name at least contain 5 characters");
+  return null;
+}
+
 export async function createGroup(
   groupName: string,
   memberLimit: number,
@@ -18,6 +31,8 @@ export async function createGroup(
   avatar: string | null,
   name: string
 ) {
+  validateNameLength({ groupName, name });
+
   const UUID = crypto.randomUUID();
   const participant_id = crypto.randomUUID();
 
@@ -30,7 +45,6 @@ export async function createGroup(
       description: description,
       member_limits: memberLimit,
       group_avatar: avatar,
-
       // JSON object which will contains all the users
       json: [
         // user object which contains details of the user
