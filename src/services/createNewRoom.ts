@@ -67,7 +67,10 @@ export async function createGroup(
     },
   ]);
 
-  if (error) throw new Error("There is an error");
+  if (error) {
+    console.log(error);
+    throw new Error("There is an error");
+  }
 
   // Saving the credentials
   saveCredentials({ UUID, participant_id });
