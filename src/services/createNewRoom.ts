@@ -38,32 +38,35 @@ export async function createGroup(
   const UUID = crypto.randomUUID();
   const participant_id = crypto.randomUUID();
 
+  const initial_object = [
+    {
+      name,
+      participant_id,
+      time_of_entering: new Date().toISOString(),
+      message: [],
+      permissions: {
+        is_host: true,
+        remove_participants: true,
+        end_chatting: true,
+        change_group_avatar: true,
+        change_group_name: true,
+      },
+    },
+  ];
+
+  const parsed_object = JSON.stringify(initial_object);
+
   const { error } = await supabase.from("chats").insert([
     {
       // Data related to group created
       uuid: UUID,
-      created_at: "now()",
+      created_at: new Date().toISOString(),
       group_name: groupName,
       description: description,
       member_limits: memberLimit,
       group_avatar: avatar,
       // JSON object which will contains all the users
-      json: [
-        // user object which contains details of the user
-        {
-          name,
-          participant_id,
-          time_of_entering: "now()",
-          message: [],
-          permissions: {
-            is_host: true,
-            remove_participants: true,
-            end_chatting: true,
-            change_group_avatar: true,
-            change_group_name: true,
-          },
-        },
-      ],
+      json: parsed_object,
     },
   ]);
 

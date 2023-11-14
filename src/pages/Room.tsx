@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { checkRoom } from "../services/checkRoom";
 
 export default function Room() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { uuid } = useParams();
   useEffect(
     function () {
@@ -12,7 +12,7 @@ export default function Room() {
       }
       initilizeRoom();
     },
-    [uuid]
+    [uuid, navigate]
   );
 
   return <div>It's a room</div>;
