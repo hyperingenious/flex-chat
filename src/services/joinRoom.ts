@@ -65,24 +65,3 @@ export async function joinRoom({
 
   return null;
 }
-/*
-[
-  {
-    json: [
-      {
-        name: "sdkjfdkjfkj",
-        participant_id: "937b90af-3513-4588-ab6b-3001defc650a",
-        time_of_entering: "now()",
-        message: [],
-        permissions: {
-          is_host: true,
-          remove_participants: true,
-          end_chatting: true,
-          change_group_avatar: true,
-          change_group_name: true,
-        },
-      },
-    ],
-  },
-];
-*/

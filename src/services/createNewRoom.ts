@@ -1,46 +1,56 @@
 import { NavigateFunction } from "react-router-dom";
 import { supabase } from "./supabase.ts";
 
-function saveCredentials({
-  UUID,
-  participant_id,
-}: {
+interface Credentials {
   UUID: string;
   participant_id: string;
-}) {
-  localStorage.setItem("FLEX_CHAT_UUID", UUID);
-  localStorage.setItem("participant_id", participant_id);
+  role: string;
 }
 
-function validateNameLength({
-  groupName,
-  name,
-}: {
+function saveCredentials(credentials: Credentials) {
+  const flex_object = {
+    uuid: credentials.UUID,
+    participant_id: credentials.participant_id,
+    role: credentials.role,
+  };
+  localStorage.setItem("flex_object", JSON.stringify(flex_object));
+}
+
+interface LengthValidator {
   groupName: string;
   name: string;
-}) {
-  if (groupName.length <= 5)
-    throw new Error("Group name at least contain 5 characters");
-  if (name.length <= 5) throw new Error("Name at least contain 5 characters");
-  return null;
 }
 
-export async function createGroup(
-  groupName: string,
-  memberLimit: number,
-  description: string,
-  avatar: string | null,
-  name: string,
-  navigate: NavigateFunction
-) {
-  validateNameLength({ groupName, name });
+function validateNameLength(nameValidate: LengthValidator) {
+  if (nameValidate.groupName.length < 5)
+    throw new Error("Group name should contain at least 5 characters");
+  if (nameValidate.name.length < 5)
+    throw new Error("Name should contain at least 5 characters");
+}
+
+interface Details {
+  groupName: string;
+  memberLimit: number;
+  description: string;
+  avatar: string | null;
+  name: string;
+  navigate: NavigateFunction;
+}
+
+export async function createGroup(GroupDetails: Details) {
+  console.log(GroupDetails);
+  
+  validateNameLength({
+    groupName: GroupDetails.groupName,
+    name: GroupDetails.name,
+  });
 
   const UUID = crypto.randomUUID();
   const participant_id = crypto.randomUUID();
 
   const initial_object = [
     {
-      name,
+      name: GroupDetails.name, // Assuming this is the correct variable
       participant_id,
       time_of_entering: new Date().toISOString(),
       message: [],
@@ -61,25 +71,25 @@ export async function createGroup(
       // Data related to group created
       uuid: UUID,
       created_at: new Date().toISOString(),
-      group_name: groupName,
-      description: description,
-      member_limits: memberLimit,
-      group_avatar: avatar,
-      // JSON object which will contains all the users
+      group_name: GroupDetails.groupName,
+      description: GroupDetails.description,
+      member_limits: GroupDetails.memberLimit,
+      group_avatar: GroupDetails.avatar,
+      // JSON object which will contain all the users
       json: parsed_object,
     },
   ]);
 
   if (error) {
-    console.log(error);
-    throw new Error("There is an error");
+    console.error("Error:", error.message); // Log the specific error message
+    throw new Error("Failed to create group");
   }
 
   // Saving the credentials
-  saveCredentials({ UUID, participant_id });
+  saveCredentials({ UUID, participant_id, role: "participant" });
 
   // Navigate user to room
-  navigate(`/room/${UUID}`);
+  GroupDetails.navigate(`/room/${UUID}`);
 
   return null;
 }
